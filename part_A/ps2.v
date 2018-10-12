@@ -13,8 +13,8 @@ module ps2
     reg [21:0] data_register;
         
     always @(negedge clk) begin
-        if (data_register[10:0] == 11'b11111100000) begin
-            last_pressed <= data_register[19:12];
+        if (data_register[11:1] == 11'b11111100000) begin
+            last_pressed <= data_register[20:13];
             key_pressed <= 1;
             data_register <= 0;
         end
