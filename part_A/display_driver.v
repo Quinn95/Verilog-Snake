@@ -14,8 +14,9 @@ module display_driver
     hexto7segment seg1(num[7:4], num1_7seg);
 
     display_multiplexer plex0(clk,
+        num0_7seg, num1_7seg,
         7'b1111111, 7'b1111111,
-        num1_7seg, num0_7seg, enable,
+        enable,
         an, seg_out);
     
 endmodule
