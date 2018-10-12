@@ -12,13 +12,12 @@ module ps2_top
     wire key_pressed;
     wire [7:0] key_code;
     
-    wire [7:0] key;
     
-    assign key = key_code;
     
     ps2 k0(.clk(PS2Clk), .data(PS2Data), .key_pressed(key_pressed),
            .last_pressed(key_code));
            
-    display_driver d0(.clk(clk), .num(key), .enable(1), .seg_out(seg), .an(an));
+    display_driver d0(.clk(clk), .num(key_code), .enable(1), .seg_out(seg), .an(an));
+    
     
 endmodule
