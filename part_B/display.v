@@ -35,7 +35,7 @@ module display
             hSync <= 1;
         end
         
-        if ((vSyncCounter >= 492) && (vSyncCounter < 494)) begin
+        if (((vSyncCounter == 492) && (hSyncCounter == 799)) || ((vSyncCounter > 492) && ((vSyncCounter < 494) && (hSyncCounter < 799)))) begin
             vSync <= 0;
         end
         else begin
