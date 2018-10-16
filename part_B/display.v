@@ -6,8 +6,8 @@ module display
     , output reg [3:0] red_out
     , output reg [3:0] blue_out
     , output reg [3:0] green_out
-    , output reg hSync
-    , output reg vSync
+    , output reg hSync = 0
+    , output reg vSync = 0
     );
     
     reg [9:0] hSyncCounter = 0;
@@ -20,7 +20,7 @@ module display
         
         if (((hSyncCounter >= 0) && (hSyncCounter <= 658)) 
             || ((hSyncCounter >= 755) && (hSyncCounter <= 799))) begin
-            hSync <= 1; 
+            hSync <= 1;
         end
         else begin
             hSync <= 0;
