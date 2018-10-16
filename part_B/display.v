@@ -10,17 +10,18 @@ module display
     , output reg vSync = 0
     );
     
-    reg [9:0] hSyncCounter = 0;
-    reg [9:0] vSyncCounter = 0;
+    reg [9:0] hSyncCounter = 10'b1111111111;
+    reg [9:0] vSyncCounter = 10'b1111111111;
     
-    wire [9:0] hSyncCounter_next = 0;
-    wire [9:0] vSyncCounter_next = 0;
+    reg [9:0] hSyncCounter_next = 0;
+    reg [9:0] vSyncCounter_next = 0;
     
-    assign hSyncCounter_next = (hSyncCounter == 799) ? 0 : hSyncCounter + 1;
-    assign vSyncCounter_next = (hSyncCounter == 799) ? ((vSyncCounter == 799) ? 0 : vSyncCounter + 1) : vSyncCounter;
+
 
     always @(posedge clk25) begin
-        
+        hSyncCounter_next = (hSyncCounter == 799) ? 0 : hSyncCounter + 1;
+        vSyncCounter_next = (hSyncCounter == 799) ? ((vSyncCounter == 524) ? 0 : vSyncCounter + 1) : vSyncCounter;
+
         if ((hSyncCounter_next >= 640) || (vSyncCounter_next >= 480))
         begin
             red_out     <= 4'h0;
@@ -29,7 +30,7 @@ module display
         end
         else
         begin
-            red_out     <= 4'hF;
+            red_out     <= 4'h0;
             blue_out    <= 4'hF;
             green_out   <= 4'hF;
         end
