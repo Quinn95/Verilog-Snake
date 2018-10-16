@@ -29,7 +29,7 @@ module display
         
         
         if (((hSyncCounter >= 0) && (hSyncCounter <= 658)) 
-            || ((hSyncCounter >= 755) && (hSyncCounter <= 799))) begin
+            || ((hSyncCounter >= 756) && (hSyncCounter <= 799))) begin
             hSync <= 1;
         end
         else begin
@@ -37,7 +37,7 @@ module display
         end
         
         if (((vSyncCounter >= 0) && (vSyncCounter <= 492))
-            || ((vSyncCounter >= 494) && (vSyncCounter <= 524))) begin
+            || ((vSyncCounter >= 493) && (vSyncCounter <= 524))) begin
             vSync <= 1;
         end
         else begin
