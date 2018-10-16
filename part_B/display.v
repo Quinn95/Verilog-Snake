@@ -10,7 +10,7 @@ module display
     , output reg vSync = 0
     );
     
-    reg [9:0] hSyncCounter = 1;
+    reg [9:0] hSyncCounter = 0;
     reg [9:0] vSyncCounter = 0;
     
     always @(posedge clk25) begin
@@ -28,22 +28,22 @@ module display
         end
         
         
-        if ((hSyncCounter > 658) && (hSyncCounter < 755)) begin
+        if ((hSyncCounter >= 658) && (hSyncCounter <= 755)) begin
             hSync <= 0;
         end
         else begin
             hSync <= 1;
         end
         
-        if ((vSyncCounter > 492) && (vSyncCounter < 494)) begin
+        if ((vSyncCounter >= 492) && (vSyncCounter <= 494)) begin
             vSync <= 0;
         end
         else begin
             vSync <= 1;
         end
     
-        hSyncCounter <= (hSyncCounter == 799) ? 1 : hSyncCounter + 1;
-        if (hSyncCounter == 798) begin
+        hSyncCounter <= (hSyncCounter == 799) ? 0 : hSyncCounter + 1;
+        if (hSyncCounter == 799) begin
             vSyncCounter <= (vSyncCounter == 524) ? 0 : vSyncCounter + 1;
         end
     end
