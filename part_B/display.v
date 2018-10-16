@@ -36,7 +36,7 @@ module display
     
         hSyncCounter <= (hSyncCounter == 799) ? 0 : hSyncCounter + 1;
         if (hSyncCounter == 799) begin
-            vSyncCounter <= (vSyncCounter == 524) ? 0 : vSyncCounter + 1; 
+            vSyncCounter <= (vSyncCounter == 524) ? 0 : vSyncCounter + 1;
         end
     end
 endmodule
