@@ -14,7 +14,7 @@ module display
     reg [9:0] vSyncCounter = 0;
     
     always @(posedge clk25) begin
-        if ((hSyncCounter >= 639) || (vSyncCounter >= 479))
+        if (((hSyncCounter >= 639) && (hSyncCounter < 799)) || ((vSyncCounter >= 479) && (hSyncCounter < 639)))
         begin
             red_out     <= 4'h0;
             blue_out    <= 4'h0;
