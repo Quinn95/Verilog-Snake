@@ -2,9 +2,9 @@
 
 module display_top(
       input clk
-    , output [3:0] vgaRED
-    , output [3:0] vgaBLUE
-    , output [3:0] vgaGREEN
+    , output [3:0] vgaRed
+    , output [3:0] vgaBlue
+    , output [3:0] vgaGreen
     , output Hsync
     , output Vsync
 );
@@ -13,6 +13,6 @@ module display_top(
     
     clkdiv25 divider(clk, clk25);
     
-    display display(clk25, rbg, vgaRED, vgaBLUE, vgaGREEN, Hsync, Vsync);
+    display display(clk25, rgb, vgaRed, vgaBlue, vgaGreen, Hsync, Vsync);
 
 endmodule

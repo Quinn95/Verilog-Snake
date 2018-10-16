@@ -18,7 +18,9 @@ module clkdiv25
             count <= 1;
             slow_clk <= ~slow_clk;
         end
-        count <= count + 1;
+        else begin
+            count <= count + 1;
+        end
     end
     
 endmodule
