@@ -6,12 +6,12 @@ module display
     , output reg [3:0] red_out
     , output reg [3:0] blue_out
     , output reg [3:0] green_out
-    , output reg hSync = 0
-    , output reg vSync = 0
+    , output reg hSync = 1
+    , output reg vSync = 1
     );
     
     reg [9:0] hSyncCounter = 10'b1111111111;
-    reg [9:0] vSyncCounter = 10'b1111111111;
+    reg [9:0] vSyncCounter = 10'b0000000000;
     
     reg [9:0] hSyncCounter_next = 0;
     reg [9:0] vSyncCounter_next = 0;
@@ -31,7 +31,7 @@ module display
         else
         begin
             red_out     <= 4'h0;
-            blue_out    <= 4'hF;
+            blue_out    <= 4'h0;
             green_out   <= 4'hF;
         end
         

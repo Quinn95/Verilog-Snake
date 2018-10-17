@@ -6,7 +6,7 @@ module clkdiv25
     , output reg slow_clk
     );
     
-    reg [3:0] count = 0;
+    reg [1:0] count = 0;
     
     initial begin
         count = 0;
@@ -14,7 +14,7 @@ module clkdiv25
     end
     
     always @(posedge clk) begin
-        if(count == 4) begin
+        if(count == 2) begin
             count <= 1;
             slow_clk <= ~slow_clk;
         end
