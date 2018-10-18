@@ -1,8 +1,15 @@
 
 
-module snake_top(
-
-);
+module snake_top
+    ( input clk
+    , input PS2Clk
+    , input PS2Data
+    , output [3:0] vgaRed
+    , output [3:0] vgaBlue
+    , output [3:0] vgaGreen
+    , output Hsync
+    , output Vsync
+    );
 
 wire died; // 1 if the snake just died
 wire init_snake; //1 if the snake is to be set to init value
