@@ -36,34 +36,54 @@ module snake_top
     //game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
 
     reg [11:0] x = 0, y = 0;
-    reg [12:0] pos = 0;
+    reg [12:0] posX = 0, posY = 0;
     reg [3:0] delta = 5;
         
     always @(posedge clk25) begin
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
-        if (((x > (pos) && (x < pos + 80))
-            && ((y > 200) && (y < 280))))
+        if (((x > (posX) && (x < posX + 80))
+            && ((y > posY) && (y < posY + 80))))
             rgb <= 12'h00F;
         else
             rgb <= 12'hF00;
     end
     
     always @(negedge Vsync) begin
+    //left
     if (key_code == 8'h74) begin
-        if (pos == (640 - 80)) begin
-            pos <= pos;
+        if (posX == (640 - 80)) begin
+            posX <= posX;
         end
         else begin
-            pos <= pos + delta;
+            posX <= posX + delta;
         end
     end
+    //right
     else if (key_code == 8'h6B) begin
-        if (pos == 0) begin
-            pos <= pos;
+        if (posX == 0) begin
+            posX <= posX;
         end
         else begin
-            pos <= pos - delta;
+            posX <= posX - delta;
+        end
+    end
+    //down
+    else if (key_code == 8'h72) begin
+        if (posY == (480 - 80)) begin
+            posY <= posY;
+        end
+        else begin
+            posY <= posY + delta;
+        end
+    end
+    //up
+    else if (key_code == 8'h75) begin
+        if (posY == 0) begin
+            posY <= posY;
+        end
+        else begin
+            posY <= posY - delta;
         end
     end
     end
