@@ -57,7 +57,7 @@ module display_top
         else if (SW4 == 1) begin
             rgb <= 12'hF00;
         end
-        else if (SW == 1) begin
+        else if (SW5 == 1) begin
             rgb <= 12'hF0F;
         end
         else if (SW6 == 1) begin
