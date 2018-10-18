@@ -32,6 +32,7 @@ module display_top(
     
     display display(clk25, rgb, vgaRed, vgaBlue, vgaGreen, Hsync, Vsync);
 
+/*
     always @(posedge clk25) begin
         
         x <= (x == 799) ? 0 : x + 1;
@@ -64,5 +65,5 @@ module display_top(
     end
 
     end
-
+*/
 endmodule
