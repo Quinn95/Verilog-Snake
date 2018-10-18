@@ -1,13 +1,22 @@
 
 
-module display_top(
-      input clk
+module display_top
+    ( input clk
     , output [3:0] vgaRed
     , output [3:0] vgaBlue
     , output [3:0] vgaGreen
     , output Hsync
     , output Vsync
-);
+    , input SW0
+    , input SW1
+    , input SW2
+    , input SW3
+    , input SW4
+    , input SW5
+    , input SW6
+    , input SW7
+    );
+    
     reg [11:0] rgb = 0;
     wire clk25;
     
