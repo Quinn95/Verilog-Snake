@@ -37,22 +37,40 @@ module snake_top
 
     reg [11:0] x = 0, y = 0;
     reg [12:0] posX = 0, posY = 0;
-    reg [3:0] delta = 5;
-        
+    reg [3:0] delta = 1;
+    
+    reg dir = 0;
+    
+    `define LENGTH 40
+    `define WIDTH  10
     always @(posedge clk25) begin
+        //update current pixel (x, y)
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
-        if (((x > (posX) && (x < posX + 80))
-            && ((y > posY) && (y < posY + 80))))
+        
+        if (dir == 0) begin
+        // if the pixel is inside the square, make it blue
+        // else make it red
+        if (((x > (posX) && (x < posX + `LENGTH))
+            && ((y > posY) && (y < posY + `WIDTH))))
             rgb <= 12'h00F;
         else
             rgb <= 12'hF00;
+        end
+        else begin
+        if (((x > (posX) && (x < posX + `WIDTH))
+            && ((y > posY) && (y < posY + `LENGTH))))
+            rgb <= 12'h00F;
+        else
+            rgb <= 12'hF00;
+        end
     end
     
     always @(negedge Vsync) begin
     //left
     if (key_code == 8'h74) begin
-        if (posX == (640 - 80)) begin
+        dir <= 0;
+        if (posX == (640 - 80)) begin // 640 is the right border, -80 for the size of the square
             posX <= posX;
         end
         else begin
@@ -61,6 +79,7 @@ module snake_top
     end
     //right
     else if (key_code == 8'h6B) begin
+        dir <= 0;
         if (posX == 0) begin
             posX <= posX;
         end
@@ -70,6 +89,7 @@ module snake_top
     end
     //down
     else if (key_code == 8'h72) begin
+        dir <= 1;
         if (posY == (480 - 80)) begin
             posY <= posY;
         end
@@ -79,6 +99,7 @@ module snake_top
     end
     //up
     else if (key_code == 8'h75) begin
+        dir <= 1;
         if (posY == 0) begin
             posY <= posY;
         end
