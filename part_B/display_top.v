@@ -16,12 +16,17 @@ module display_top(
     
     reg dir = 0;
     reg [12:0] pos = 0;
-    reg [3:0] delta = 1;
+    reg [3:0] delta = 5;
     
-    reg [15:0] frame = 0;
-
-    always@(posedge clk25) begin
-        frame <= frame + 1;
+    reg [20:0] frame_cd = 0;
+    reg frame = 0;
+    always@(posedge clk) begin
+        if (frame_cd == 1666666) begin // I think that's 30 fps        
+            frame <= ~frame;
+            frame_cd <= 0;
+        end
+        else
+            frame_cd <= frame_cd + 1;
     end
     clkdiv25 divider(clk, clk25);
     
@@ -38,7 +43,7 @@ module display_top(
             rgb <= 12'hF00;
     end
     
-    always @(posedge frame[15]) begin
+    always @(negedge Vsync) begin
     if (dir == 0) begin
         if (pos == (640 - 80)) begin
             dir <= 1;
