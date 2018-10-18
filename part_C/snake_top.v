@@ -23,6 +23,7 @@ module snake_top
     wire key_pressed; // turns high for one ps2 clock cycle when a key is pressed
     reg [7:0] key_code; // the 8 bit code of the last key pressed
 
+    clkdiv25 cd25 (clk, clk25);
 
     display display(.clk25(clk25), .rgb(rgb), .red_out(vgaRed),
                     .blue_out(vgaBlue), .green_out(vgaGreen),
