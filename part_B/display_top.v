@@ -32,6 +32,33 @@ module display_top(
     
     display display(clk25, rgb, vgaRed, vgaBlue, vgaGreen, Hsync, Vsync);
 
+    always @(posedge clk) begin
+        if (SW0 == 1) begin
+            rgb <= 12'h000;
+        end
+        else if (SW1 == 1) begin
+            rgb <= 12'h00F;
+        end
+        else if (SW2 == 1) begin
+            rgb <= 12'hA22;
+        end
+        else if (SW3 == 1) begin
+            rgb <= 12'h0FF;
+        end
+        else if (SW4 == 1) begin
+            rgb <= 12'hF00;
+        end
+        else if (SW == 1) begin
+            rgb <= 12'hF0F;
+        end
+        else if (SW6 == 1) begin
+            rgb <= 12'hFF0;
+        end
+        else if (SW7 == 1) begin
+            rgb <= 12'hFFF;
+        end
+        else rgb <= 12'h000;
+    end
 /*
     always @(posedge clk25) begin
         
