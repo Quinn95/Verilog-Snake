@@ -40,7 +40,7 @@ module snake_top
                  .last_pressed(key_code));
     
     //FSM that determines if anything is ouput on screen
-    //game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
+    game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
 
     reg [11:0] x = 0, y = 0;
     reg [3:0] delta = 1;
@@ -104,26 +104,33 @@ module snake_top
     end
     
     always @(negedge Vsync) begin
-        for(seg = 3; seg > 0; seg = seg - 1) begin
-        positions[seg] <= positions[seg - 1];
-    end
+        if (init_snake == 1) begin
+            positions[0] = 3;
+            positions[1] = 2;
+            positions[2] = 1;
+            positions[3] = 0;
+        end
+        else begin
+            for(seg = 3; seg > 0; seg = seg - 1) begin
+            positions[seg] <= positions[seg - 1];
+            end
 
-
-        //left
-        if (key_code == 8'h74) begin
-            positions[0][`posX] <= positions[0][`posX] + 1; 
-        end
-        //right
-        else if (key_code == 8'h6B) begin
-            positions[0][`posX] <= positions[0][`posX] - 1; 
-        end
-        //down
-        else if (key_code == 8'h72) begin
-            positions[0][`posY] <= positions[0][`posY] + 1; 
-        end
-        //up
-        else if (key_code == 8'h75) begin
-            positions[0][`posY] <= positions[0][`posY] - 1; 
+            //left
+            if (key_code == 8'h74) begin
+                positions[0][`posX] <= positions[0][`posX] + 1; 
+            end
+            //right
+            else if (key_code == 8'h6B) begin
+                positions[0][`posX] <= positions[0][`posX] - 1; 
+            end
+            //down
+            else if (key_code == 8'h72) begin
+                positions[0][`posY] <= positions[0][`posY] + 1; 
+            end
+            //up
+            else if (key_code == 8'h75) begin
+                positions[0][`posY] <= positions[0][`posY] - 1; 
+            end
         end
     end
 
