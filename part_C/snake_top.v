@@ -56,6 +56,8 @@ module snake_top
     
     reg done = 0;
     
+    assign died = 0;
+    
     always @(*) begin
         done = 0;
         for (seg = 0; (seg < 4) && (!done); seg = seg + 1) begin

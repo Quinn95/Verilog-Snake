@@ -22,7 +22,7 @@ begin
                 screen_black = 0;
                 screen_pause = 0;
             end
-            else begin
+            else begin // stay black 
                 screen_black = 1;
                 init_snake = 0;
                 screen_pause = 0;
@@ -51,6 +51,12 @@ begin
             else if (died == 1) begin
                 screen_pause = 1;
                 State_next = 3;
+                init_snake = 0;
+                screen_black = 0;
+            end
+            else begin //keep running 
+                screen_pause = 0;
+                State_next = State_cur;
                 init_snake = 0;
                 screen_black = 0;
             end
@@ -94,7 +100,7 @@ begin
                 init_snake = 0;
                 screen_pause = 0;
             end
-            else begin
+            else begin // stay at game over
                 screen_pause = 1;
                 init_snake = 0;
                 screen_black = 0;
