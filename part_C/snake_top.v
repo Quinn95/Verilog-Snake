@@ -23,6 +23,9 @@ module snake_top
     wire key_pressed; // turns high for one ps2 clock cycle when a key is pressed
     wire [7:0] key_code; // the 8 bit code of the last key pressed
     
+    //0:up, 1:down, 2:left, 3:right
+    reg [1:0] direction = 3;
+    
     // 66 possible x values (0, 63) for visible, 64 for OOB right, 127 for OOB left
     `define posX 6:0
     // 50 possible y values (0, 47) for visible, 48 for OOB right,  63 for OOB left
@@ -54,34 +57,16 @@ module snake_top
         positions[3] = 0;
     end
     
-    reg done = 0;
     
     assign died = 0;
     
     always @(*) begin
-        done = 0;
-        for (seg = 0; (seg < 4) && (!done); seg = seg + 1) begin
+        rgb_next = 12'h000;
+        for (seg = 0; seg < 4; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
-                if (seg == 0) begin
                     rgb_next = 12'hF00;
-                    done = 1;
-                end
-                else if (seg == 1) begin
-                    rgb_next = 12'hFF0;
-                    done = 1;
-                end
-                else if (seg == 2) begin
-                    rgb_next = 12'hFFF;
-                    done = 1;
-                end
-                else if (seg == 3) begin
-                    rgb_next = 12'h000;
-                    done = 1;
-                end
             end
-             else
-                rgb_next = 12'h00F;
         end
     end
     
@@ -90,55 +75,71 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
+        /*
         if (screen_black == 1) begin
             rgb <= 12'h000;
         end
         else begin
+        */
             rgb <= rgb_next;
-        end
+        //end
     end
     
         
     reg [5:0] slow_vsync_count = 0;
     reg slow_vsync = 1;
     always @(negedge Vsync) begin
-        if (slow_vsync_count == 5) begin
-            slow_vsync <= ~slow_vsync;
+        if (slow_vsync_count == 10) begin
+            slow_vsync <= 1;
             slow_vsync_count <= 1;
         end
-        else
-            slow_vsync_count <= 1;
+        else begin
+            slow_vsync_count <= slow_vsync_count + 1;
+            slow_vsync <= 0;
+        end
     end
     
     always @(negedge Vsync) begin
+    /*
         if (init_snake == 1) begin
             positions[0] = 3;
             positions[1] = 2;
             positions[2] = 1;
             positions[3] = 0;
         end
-        else if (screen_pause == 0) begin
+    */
+        //else if (screen_pause == 0) begin
+            if (slow_vsync) begin
             for(seg = 3; seg > 0; seg = seg - 1) begin
                 positions[seg] <= positions[seg - 1];
             end
-
-            //left
-            if (key_code == 8'h74) begin
+            
+            if (direction == 0) // up
+                positions[0][`posY] <= positions[0][`posY] - 1; 
+            else if (direction == 1) // down
+                positions[0][`posY] <= positions[0][`posY] + 1; 
+            else if (direction == 2) // left
+                positions[0][`posX] <= positions[0][`posX] - 1; 
+            else // direction == 3 right
                 positions[0][`posX] <= positions[0][`posX] + 1; 
             end
-            //right
-            else if (key_code == 8'h6B) begin
-                positions[0][`posX] <= positions[0][`posX] - 1; 
-            end
-            //down
-            else if (key_code == 8'h72) begin
-                positions[0][`posY] <= positions[0][`posY] + 1; 
-            end
             //up
-            else if (key_code == 8'h75) begin
-                positions[0][`posY] <= positions[0][`posY] - 1; 
-            end
-        end
+             if (key_code == 8'h75)
+                if ((direction == 2) || (direction == 3))
+                    direction <= 0;
+            //right
+            else if (key_code == 8'h74)
+                if ((direction == 0) || (direction == 1))
+                    direction <= 3;
+            //left
+            else if (key_code == 8'h6B)
+                if ((direction == 0) || (direction == 1))
+                    direction <= 2;
+            //down
+            else if (key_code == 8'h72)
+                if ((direction == 2) || (direction == 3))
+                    direction <= 1;
+        //end
     end
 
 endmodule
