@@ -88,7 +88,12 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        rgb <= rgb_next;
+        if (screen_black == 1) begin
+            rgb <= 12'h000;
+        end
+        else begin
+            rgb <= rgb_next;
+        end
     end
     
         
@@ -110,7 +115,7 @@ module snake_top
             positions[2] = 1;
             positions[3] = 0;
         end
-        else begin
+        else if (screen_pause == 0) begin
             for(seg = 3; seg > 0; seg = seg - 1) begin
             positions[seg] <= positions[seg - 1];
             end
