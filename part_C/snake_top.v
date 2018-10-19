@@ -18,7 +18,7 @@ module snake_top
     wire screen_black; //1 if screen is set all black
     wire screen_pause; //1 for freeze (dead or pause) and 0 for running snake
 
-    reg [11:0] rgb;
+    reg [11:0] rgb, rgb_next;
     
     wire key_pressed; // turns high for one ps2 clock cycle when a key is pressed
     wire [7:0] key_code; // the 8 bit code of the last key pressed
@@ -54,38 +54,59 @@ module snake_top
         positions[3] = 0;
     end
     
-    `define LENGTH 40
-    `define WIDTH  10
+    reg done = 0;
+    
+    always @(*) begin
+        done = 0;
+        for (seg = 0; (seg < 4) && (!done); seg = seg + 1) begin
+            if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
+                && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
+                if (seg == 0) begin
+                    rgb_next = 12'hF00;
+                    done = 1;
+                end
+                else if (seg == 1) begin
+                    rgb_next = 12'hFF0;
+                    done = 1;
+                end
+                else if (seg == 2) begin
+                    rgb_next = 12'hFFF;
+                    done = 1;
+                end
+                else if (seg == 3) begin
+                    rgb_next = 12'h000;
+                    done = 1;
+                end
+            end
+             else
+                rgb_next = 12'h00F;
+        end
+    end
+    
     always @(posedge clk25) begin
         //update current pixel (x, y)
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        if (((x >= 10*positions[0][`posX]) && (x < 10*positions[0][`posX] + 10))
-            && ((y >= 10*positions[0][`posY]) && (y < 10*positions[0][`posY] + 10))) begin
-                rgb <= 12'hF00;
-        end
-        else if (((x >= 10*positions[1][`posX]) && (x < 10*positions[1][`posX] + 10))
-            && ((y >= 10*positions[1][`posY]) && (y < 10*positions[1][`posY] + 10))) begin
-                rgb <= 12'hFF0;
-        end
-        else if (((x >= 10*positions[2][`posX]) && (x < 10*positions[2][`posX] + 10))
-            && ((y >= 10*positions[2][`posY]) && (y < 10*positions[2][`posY] + 10))) begin
-                rgb <= 12'hFFF;
-        end
-        else if (((x >= 10*positions[3][`posX]) && (x < 10*positions[3][`posX] + 10))
-            && ((y >= 10*positions[3][`posY]) && (y < 10*positions[3][`posY] + 10))) begin
-                rgb <= 12'h000;
+        rgb <= rgb_next;
+    end
+    
+        
+    reg [5:0] slow_vsync_count = 0;
+    reg slow_vsync = 1;
+    always @(negedge Vsync) begin
+        if (slow_vsync_count == 5) begin
+            slow_vsync <= ~slow_vsync;
+            slow_vsync_count <= 1;
         end
         else
-                rgb <= 12'h00F;
-        end
-    
+            slow_vsync_count <= 1;
+    end
     
     always @(negedge Vsync) begin
-        positions[3] <= positions[2];
-        positions[2] <= positions[1];
-        positions[1] <= positions[0];
+        for(seg = 3; seg > 0; seg = seg - 1) begin
+        positions[seg] <= positions[seg - 1];
+    end
 
 
         //left
