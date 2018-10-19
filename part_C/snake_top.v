@@ -61,22 +61,25 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        for (seg = 0; seg <= 3; seg = seg + 1) begin
-            if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
-                && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
-                if (seg == 0)
-                    rgb <= 12'hF00;
-                else if (seg == 1)
-                    rgb <= 12'hFF0;
-                else if (seg == 2)
-                    rgb <= 12'hFFF;
-                else if (seg == 3)
-                    rgb <= 12'h000;
-            end
-            else
+        if (((x >= 10*positions[0][`posX]) && (x < 10*positions[0][`posX] + 10))
+            && ((y >= 10*positions[0][`posY]) && (y < 10*positions[0][`posY] + 10))) begin
+                rgb <= 12'hF00;
+        end
+        else if (((x >= 10*positions[1][`posX]) && (x < 10*positions[1][`posX] + 10))
+            && ((y >= 10*positions[1][`posY]) && (y < 10*positions[1][`posY] + 10))) begin
+                rgb <= 12'hFF0;
+        end
+        else if (((x >= 10*positions[2][`posX]) && (x < 10*positions[2][`posX] + 10))
+            && ((y >= 10*positions[2][`posY]) && (y < 10*positions[2][`posY] + 10))) begin
+                rgb <= 12'hFFF;
+        end
+        else if (((x >= 10*positions[3][`posX]) && (x < 10*positions[3][`posX] + 10))
+            && ((y >= 10*positions[3][`posY]) && (y < 10*positions[3][`posY] + 10))) begin
+                rgb <= 12'h000;
+        end
+        else
                 rgb <= 12'h00F;
         end
-    end
     
     
     always @(negedge Vsync) begin
