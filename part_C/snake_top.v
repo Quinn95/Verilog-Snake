@@ -22,7 +22,14 @@ module snake_top
     
     wire key_pressed; // turns high for one ps2 clock cycle when a key is pressed
     wire [7:0] key_code; // the 8 bit code of the last key pressed
-
+    
+    // 66 possible x values (0, 63) for visible, 64 for OOB right, 127 for OOB left
+    `define posX 6:0
+    // 50 possible y values (0, 47) for visible, 48 for OOB right,  63 for OOB left
+    `define posY 12:7
+    // combine x and y positions into one vector, store in array for each of four snake segments
+    reg [12:0] positions[3:0];
+    
     clkdiv25 cd25 (clk, clk25);
 
     display display(.clk25(clk25), .rgb(rgb), .red_out(vgaRed),
@@ -36,10 +43,9 @@ module snake_top
     //game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
 
     reg [11:0] x = 0, y = 0;
-    reg [12:0] posX = 0, posY = 0;
     reg [3:0] delta = 1;
     
-    reg dir = 0;
+    reg [1:0] seg = 0;
     
     `define LENGTH 40
     `define WIDTH  10
@@ -48,65 +54,38 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        if (dir == 0) begin
-        // if the pixel is inside the square, make it blue
-        // else make it red
-        if (((x > (posX) && (x < posX + `LENGTH))
-            && ((y > posY) && (y < posY + `WIDTH))))
-            rgb <= 12'h00F;
-        else
-            rgb <= 12'hF00;
-        end
-        else begin
-        if (((x > (posX) && (x < posX + `WIDTH))
-            && ((y > posY) && (y < posY + `LENGTH))))
-            rgb <= 12'h00F;
-        else
-            rgb <= 12'hF00;
+        for (seg = 0; seg < 3; seg = seg + 1) begin
+            if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX]))
+                && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY]))) begin
+                rgb <= 12'hF00;
+            end
+            else
+                rgb <= 12'h00F;
         end
     end
     
+    
     always @(negedge Vsync) begin
-    //left
-    if (key_code == 8'h74) begin
-        dir <= 0;
-        if (posX == (640 - 80)) begin // 640 is the right border, -80 for the size of the square
-            posX <= posX;
+        for(seg = 3; seg > 0; seg = seg - 1) begin
+            positions[seg] <= positions[seg - 1];
         end
-        else begin
-            posX <= posX + delta;
+
+        //left
+        if (key_code == 8'h74) begin
+            positions[0][`posX] <= positions[0][`posX] - 1; 
         end
-    end
-    //right
-    else if (key_code == 8'h6B) begin
-        dir <= 0;
-        if (posX == 0) begin
-            posX <= posX;
+        //right
+        else if (key_code == 8'h6B) begin
+            positions[0][`posX] <= positions[0][`posX] + 1; 
         end
-        else begin
-            posX <= posX - delta;
+        //down
+        else if (key_code == 8'h72) begin
+            positions[0][`posY] <= positions[0][`posY] + 1; 
         end
-    end
-    //down
-    else if (key_code == 8'h72) begin
-        dir <= 1;
-        if (posY == (480 - 80)) begin
-            posY <= posY;
+        //up
+        else if (key_code == 8'h75) begin
+            positions[0][`posY] <= positions[0][`posY] - 1; 
         end
-        else begin
-            posY <= posY + delta;
-        end
-    end
-    //up
-    else if (key_code == 8'h75) begin
-        dir <= 1;
-        if (posY == 0) begin
-            posY <= posY;
-        end
-        else begin
-            posY <= posY - delta;
-        end
-    end
     end
 
 endmodule
