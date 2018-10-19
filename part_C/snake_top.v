@@ -45,7 +45,14 @@ module snake_top
     reg [11:0] x = 0, y = 0;
     reg [3:0] delta = 1;
     
-    reg [1:0] seg = 0;
+    reg [2:0] seg = 0;
+    
+    initial begin
+        positions[0] = 3;
+        positions[1] = 2;
+        positions[2] = 1;
+        positions[3] = 0;
+    end
     
     `define LENGTH 40
     `define WIDTH  10
@@ -57,7 +64,14 @@ module snake_top
         for (seg = 0; seg < 3; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
-                rgb <= 12'hF00;
+                if (seg == 0)
+                    rgb <= 12'hF00;
+                else if (seg == 1)
+                    rgb <= 12'hFF0;
+                else if (seg == 2)
+                    rgb <= 12'hFFF;
+                else if (seg == 3)
+                    rgb <= 12'h000;
             end
             else
                 rgb <= 12'h00F;
@@ -72,11 +86,11 @@ module snake_top
 
         //left
         if (key_code == 8'h74) begin
-            positions[0][`posX] <= positions[0][`posX] - 1; 
+            positions[0][`posX] <= positions[0][`posX] + 1; 
         end
         //right
         else if (key_code == 8'h6B) begin
-            positions[0][`posX] <= positions[0][`posX] + 1; 
+            positions[0][`posX] <= positions[0][`posX] - 1; 
         end
         //down
         else if (key_code == 8'h72) begin
