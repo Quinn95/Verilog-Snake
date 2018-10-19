@@ -61,7 +61,7 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        for (seg = 0; seg < 3; seg = seg + 1) begin
+        for (seg = 0; seg <= 3; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
                 if (seg == 0)
@@ -80,9 +80,10 @@ module snake_top
     
     
     always @(negedge Vsync) begin
-        for(seg = 3; seg > 0; seg = seg - 1) begin
-            positions[seg] <= positions[seg - 1];
-        end
+        positions[3] <= positions[2];
+        positions[2] <= positions[1];
+        positions[1] <= positions[0];
+
 
         //left
         if (key_code == 8'h74) begin
