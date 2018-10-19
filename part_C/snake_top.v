@@ -112,7 +112,7 @@ module snake_top
         end
         else begin
             for(seg = 3; seg > 0; seg = seg - 1) begin
-            positions[seg] <= positions[seg - 1];
+                positions[seg] <= positions[seg - 1];
             end
 
             //left

@@ -4,7 +4,7 @@
 module game_state
     ( input clk
     , input died
-    , input key_code
+    , input [7:0] key_code
     , output reg init_snake
     , output reg screen_black
     , output reg screen_pause
@@ -104,7 +104,7 @@ begin
     endcase
 end
 
-always @(posedge clk)
+always @(negedge clk)
 begin
     State_next <= State_cur;
 end
