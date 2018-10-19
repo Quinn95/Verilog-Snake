@@ -124,22 +124,25 @@ module snake_top
                 positions[0][`posX] <= positions[0][`posX] + 1; 
             end
             //up
-             if (key_code == 8'h75)
+             if (key_code == 8'h75) begin
                 if ((direction == 2) || (direction == 3))
                     direction <= 0;
+            end
             //right
-            else if (key_code == 8'h74)
+            else if (key_code == 8'h74) begin
                 if ((direction == 0) || (direction == 1))
                     direction <= 3;
+            end
             //left
-            else if (key_code == 8'h6B)
+            else if (key_code == 8'h6B) begin
                 if ((direction == 0) || (direction == 1))
                     direction <= 2;
+            end
             //down
-            else if (key_code == 8'h72)
+            else if (key_code == 8'h72) begin
                 if ((direction == 2) || (direction == 3))
                     direction <= 1;
-        //end
+            end
     end
 
 endmodule
