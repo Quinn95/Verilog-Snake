@@ -55,8 +55,8 @@ module snake_top
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
         for (seg = 0; seg < 3; seg = seg + 1) begin
-            if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX]))
-                && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY]))) begin
+            if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
+                && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
                 rgb <= 12'hF00;
             end
             else
