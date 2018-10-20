@@ -10,7 +10,7 @@ module game_state
     , output reg screen_pause
     );
     
-    reg [1:0] State_cur, State_next;
+    reg [1:0] State_cur = 0, State_next = 0;
     
 always @(*)
 begin
@@ -112,7 +112,7 @@ end
 
 always @(negedge clk)
 begin
-    State_next <= State_cur;
+    State_cur <= State_next;
 end
  
 endmodule
