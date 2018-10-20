@@ -9,7 +9,6 @@ module snake_top
     , output [3:0] vgaGreen
     , output Hsync
     , output Vsync
-    , input grow
     );
     
     wire clk25;
@@ -51,6 +50,15 @@ module snake_top
     reg [10:0] seg = 0;
     reg [10:0] size = 4;
     
+    reg [50:0] frame_count = 0;
+    reg [12:0] apple = 6, apple_next;
+    reg grow;
+    
+    always@(*) begin
+        apple_next[`posX] = (frame_count % 63);
+        apple_next[`posY] = (frame_count % 47);
+    end
+    
     initial begin
         positions[0] = 3;
         positions[1] = 2;
@@ -75,11 +83,15 @@ module snake_top
     
     
     always @(*) begin
-        rgb_next = 12'h007;
+        rgb_next = 12'hFFF;
+        if (((x >= 10*apple[`posX]) && (x < 10*apple[`posX] + 10))
+            && ((y >= 10*apple[`posY]) && (y < 10*apple[`posY] + 10)))
+                rgb_next = 12'h0F0;
+                
         for (seg = 0; seg < 20; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
-                    rgb_next = 12'hF00;
+                    rgb_next = 12'h000;
             end
         end
     end
@@ -112,6 +124,7 @@ module snake_top
     end
     
     always @(negedge Vsync) begin
+        frame_count <= frame_count + 1;
  
         if (init_snake == 1) begin
             direction <= 3;
@@ -129,8 +142,8 @@ module snake_top
         else if (screen_pause == 0) begin
         
             if (slow_vsync) begin
-            
-                if (grow) begin
+                if (positions[0] == apple) begin
+                    apple <= apple_next;
                     size <= size + 1;
                     positions[size] <= positions[size-1];
                 end
