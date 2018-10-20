@@ -75,14 +75,12 @@ module snake_top
         x <= (x == 799) ? 0 : x + 1;
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
-        /*
         if (screen_black == 1) begin
             rgb <= 12'h000;
         end
         else begin
-        */
             rgb <= rgb_next;
-        //end
+        end
     end
     
         
@@ -100,29 +98,34 @@ module snake_top
     end
     
     always @(negedge Vsync) begin
-    /*
+ 
         if (init_snake == 1) begin
             positions[0] = 3;
             positions[1] = 2;
             positions[2] = 1;
             positions[3] = 0;
         end
-    */
-        //else if (screen_pause == 0) begin
+  
+        else if (screen_pause == 0) begin
+        
             if (slow_vsync) begin
-            for(seg = 3; seg > 0; seg = seg - 1) begin
-                positions[seg] <= positions[seg - 1];
-            end
             
-            if (direction == 0) // up
-                positions[0][`posY] <= positions[0][`posY] - 1; 
-            else if (direction == 1) // down
-                positions[0][`posY] <= positions[0][`posY] + 1; 
-            else if (direction == 2) // left
-                positions[0][`posX] <= positions[0][`posX] - 1; 
-            else // direction == 3 right
-                positions[0][`posX] <= positions[0][`posX] + 1; 
-            end
+                for(seg = 3; seg > 0; seg = seg - 1) begin
+                    positions[seg] <= positions[seg - 1];
+                end
+            
+                if (direction == 0) // up
+                    positions[0][`posY] <= positions[0][`posY] - 1; 
+                else if (direction == 1) // down
+                    positions[0][`posY] <= positions[0][`posY] + 1; 
+                else if (direction == 2) // left
+                    positions[0][`posX] <= positions[0][`posX] - 1; 
+                else // direction == 3 right
+                    positions[0][`posX] <= positions[0][`posX] + 1; 
+                
+            end // if (slow_vsync)
+            
+            //update direction based on keypress
             //up
              if (key_code == 8'h75) begin
                 if ((direction == 2) || (direction == 3))
@@ -143,6 +146,8 @@ module snake_top
                 if ((direction == 2) || (direction == 3))
                     direction <= 1;
             end
+            
+        end // screen_pause == 0
     end
 
 endmodule
