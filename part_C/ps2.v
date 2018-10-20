@@ -11,6 +11,7 @@ module ps2
     
     // used as a shift register to process incoming bits
     reg [21:0] data_register;
+    
         
     always @(negedge clk) begin
         if (data_register[12:2] == 11'b11111100000) begin

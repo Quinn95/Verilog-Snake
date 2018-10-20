@@ -9,11 +9,12 @@ module snake_top
     , output [3:0] vgaGreen
     , output Hsync
     , output Vsync
+    , input grow
     );
     
     wire clk25;
 
-    wire died; // 1 if the snake just died
+    reg died; // 1 if the snake just died
     wire init_snake; //1 if the snake is to be set to init value
     wire screen_black; //1 if screen is set all black
     wire screen_pause; //1 for freeze (dead or pause) and 0 for running snake
@@ -31,7 +32,7 @@ module snake_top
     // 50 possible y values (0, 47) for visible, 48 for OOB right,  63 for OOB left
     `define posY 12:7
     // combine x and y positions into one vector, store in array for each of four snake segments
-    reg [12:0] positions[3:0];
+    reg [12:0] positions[20:0];
     
     clkdiv25 cd25 (clk, clk25);
 
@@ -46,23 +47,36 @@ module snake_top
     game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
 
     reg [11:0] x = 0, y = 0;
-    reg [3:0] delta = 1;
     
-    reg [2:0] seg = 0;
+    reg [10:0] seg = 0;
+    reg [10:0] size = 4;
     
     initial begin
         positions[0] = 3;
         positions[1] = 2;
         positions[2] = 1;
         positions[3] = 0;
+        for (seg = 4; seg < 20; seg = seg + 1) begin
+            positions[seg][`posX] = 64;
+            positions[seg][`posY] = 50;
+        end
+    end
+    
+        
+    
+    always @(*) begin
+        died = 0;
+        for (seg = 1; seg < 20; seg = seg + 1) begin
+            if (positions[0] == positions[seg])
+                died = 1;
+        end
+        died = died || (positions[0][`posX] > 63) || (positions[0][`posY] > 47);
     end
     
     
-    assign died = 0;
-    
     always @(*) begin
-        rgb_next = 12'h000;
-        for (seg = 0; seg < 4; seg = seg + 1) begin
+        rgb_next = 12'h007;
+        for (seg = 0; seg < 20; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
                     rgb_next = 12'hF00;
@@ -76,7 +90,7 @@ module snake_top
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
         if (screen_black == 1) begin
-            rgb <= 12'h000;
+            rgb <= 12'h0F0;
         end
         else begin
             rgb <= rgb_next;
@@ -100,18 +114,30 @@ module snake_top
     always @(negedge Vsync) begin
  
         if (init_snake == 1) begin
-            positions[0] = 3;
-            positions[1] = 2;
-            positions[2] = 1;
-            positions[3] = 0;
+            direction <= 3;
+            size <= 4;
+            positions[0] <= 3;
+            positions[1] <= 2;
+            positions[2] <= 1;
+            positions[3] <= 0;
+            for (seg = 4; seg < 20; seg = seg + 1) begin
+                positions[seg][`posX] <= 64;
+                positions[seg][`posY] <= 50;
+            end
         end
   
         else if (screen_pause == 0) begin
         
             if (slow_vsync) begin
             
-                for(seg = 3; seg > 0; seg = seg - 1) begin
-                    positions[seg] <= positions[seg - 1];
+                if (grow) begin
+                    size <= size + 1;
+                    positions[size] <= positions[size-1];
+                end
+                
+                for(seg = 20; seg > 0; seg = seg - 1) begin
+                    if (seg < size)
+                        positions[seg] <= positions[seg - 1];
                 end
             
                 if (direction == 0) // up
