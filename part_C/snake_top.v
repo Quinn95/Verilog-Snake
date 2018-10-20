@@ -1,4 +1,4 @@
-
+`define SNAKE_MAX 100
 
 module snake_top
     ( input clk
@@ -32,7 +32,7 @@ module snake_top
     // 50 possible y values (0, 47) for visible, 48 for OOB right,  63 for OOB left
     `define posY 12:7
     // combine x and y positions into one vector, store in array for each of four snake segments
-    reg [12:0] positions[20:0];
+    reg [12:0] positions[`SNAKE_MAX-1:0];
     
     clkdiv25 cd25 (clk, clk25);
 
@@ -65,7 +65,7 @@ module snake_top
         positions[1] = 2;
         positions[2] = 1;
         positions[3] = 0;
-        for (seg = 4; seg < 20; seg = seg + 1) begin
+        for (seg = 4; seg < `SNAKE_MAX; seg = seg + 1) begin
             positions[seg][`posX] = 64;
             positions[seg][`posY] = 50;
         end
@@ -89,7 +89,7 @@ module snake_top
             && ((y >= 10*apple[`posY]) && (y < 10*apple[`posY] + 10)))
                 rgb_next = 12'h0F0;
                 
-        for (seg = 0; seg < 20; seg = seg + 1) begin
+        for (seg = 0; seg < `SNAKE_MAX; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
                     rgb_next = 12'h000;
@@ -134,7 +134,7 @@ module snake_top
             positions[1] <= 2;
             positions[2] <= 1;
             positions[3] <= 0;
-            for (seg = 4; seg < 20; seg = seg + 1) begin
+            for (seg = 4; seg < `SNAKE_MAX; seg = seg + 1) begin
                 positions[seg][`posX] <= 64;
                 positions[seg][`posY] <= 50;
             end
@@ -151,7 +151,7 @@ module snake_top
                     positions[size] <= positions[size-1];
                 end
                 
-                for(seg = 20; seg > 0; seg = seg - 1) begin
+                for(seg = `SNAKE_MAX; seg > 0; seg = seg - 1) begin
                     if (seg < size)
                         positions[seg] <= positions[seg - 1];
                 end
