@@ -25,6 +25,7 @@ module snake_top
     
     //0:up, 1:down, 2:left, 3:right
     reg [1:0] direction = 3;
+    reg [1:0] direction_last = 3;
     
     // 66 possible x values (0, 63) for visible, 64 for OOB right, 127 for OOB left
     `define posX 6:0
@@ -142,6 +143,8 @@ module snake_top
         else if (screen_pause == 0) begin
         
             if (slow_vsync) begin
+                direction_last <= direction;
+                
                 if (positions[0] == apple) begin
                     apple <= apple_next;
                     size <= size + 1;
@@ -172,20 +175,19 @@ module snake_top
             end
             //right
             else if (key_code == 8'h74) begin
-                if ((direction == 0) || (direction == 1))
+                if ((direction_last == 0) || (direction_last == 1))
                     direction <= 3;
             end
             //left
             else if (key_code == 8'h6B) begin
-                if ((direction == 0) || (direction == 1))
+                if ((direction_last == 0) || (direction_last == 1))
                     direction <= 2;
             end
             //down
             else if (key_code == 8'h72) begin
-                if ((direction == 2) || (direction == 3))
+                if ((direction_last == 2) || (direction_last == 3))
                     direction <= 1;
             end
-            
         end // screen_pause == 0
     end
 
