@@ -11,6 +11,175 @@ module snake_top
     , output Vsync
     );
     
+    reg [10:0] tx, ty;
+    reg text[63:0][47:0];
+    
+    initial begin
+        for (tx = 0; tx < 64; tx = tx + 1) begin
+            for (ty = 0; ty < 48; ty = ty + 1) begin
+                text[tx][ty] = 0;
+            end
+        end
+        text[3][5] = 1;
+        text[4][5] = 1;
+        text[5][5] = 1;
+        text[6][5] = 1;
+        text[7][5] = 1;
+        text[8][5] = 1;
+        text[9][5] = 1;
+        text[10][5] = 1;
+        text[13][5] = 1;
+        text[14][5] = 1;
+        text[22][5] = 1;
+        text[32][5] = 1;
+        text[33][5] = 1;
+        text[43][5] = 1;
+        text[48][5] = 1;
+        text[49][5] = 1;
+        text[52][5] = 1;
+        text[53][5] = 1;
+        text[54][5] = 1;
+        text[55][5] = 1;
+        text[56][5] = 1;
+        text[57][5] = 1;
+        text[58][5] = 1;
+        text[3][6] = 1;
+        text[13][6] = 1;
+        text[14][6] = 1;
+        text[15][6] = 1;
+        text[22][6] = 1;
+        text[31][6] = 1;
+        text[32][6] = 1;
+        text[33][6] = 1;
+        text[34][6] = 1;
+        text[43][6] = 1;
+        text[47][6] = 1;
+        text[48][6] = 1;
+        text[52][6] = 1;
+        text[3][7] = 1;
+        text[13][7] = 1;
+        text[15][7] = 1;
+        text[16][7] = 1;
+        text[22][7] = 1;
+        text[30][7] = 1;
+        text[31][7] = 1;
+        text[34][7] = 1;
+        text[35][7] = 1;
+        text[43][7] = 1;
+        text[46][7] = 1;
+        text[47][7] = 1;
+        text[52][7] = 1;
+        text[3][8] = 1;
+        text[13][8] = 1;
+        text[16][8] = 1;
+        text[17][8] = 1;
+        text[22][8] = 1;
+        text[29][8] = 1;
+        text[30][8] = 1;
+        text[35][8] = 1;
+        text[36][8] = 1;
+        text[43][8] = 1;
+        text[45][8] = 1;
+        text[46][8] = 1;
+        text[52][8] = 1;
+        text[3][9] = 1;
+        text[4][9] = 1;
+        text[5][9] = 1;
+        text[6][9] = 1;
+        text[7][9] = 1;
+        text[8][9] = 1;
+        text[9][9] = 1;
+        text[10][9] = 1;
+        text[13][9] = 1;
+        text[17][9] = 1;
+        text[18][9] = 1;
+        text[22][9] = 1;
+        text[28][9] = 1;
+        text[29][9] = 1;
+        text[36][9] = 1;
+        text[37][9] = 1;
+        text[43][9] = 1;
+        text[44][9] = 1;
+        text[45][9] = 1;
+        text[52][9] = 1;
+        text[53][9] = 1;
+        text[54][9] = 1;
+        text[55][9] = 1;
+        text[56][9] = 1;
+        text[57][9] = 1;
+        text[58][9] = 1;
+        text[10][10] = 1;
+        text[13][10] = 1;
+        text[18][10] = 1;
+        text[19][10] = 1;
+        text[22][10] = 1;
+        text[27][10] = 1;
+        text[28][10] = 1;
+        text[29][10] = 1;
+        text[30][10] = 1;
+        text[31][10] = 1;
+        text[32][10] = 1;
+        text[33][10] = 1;
+        text[34][10] = 1;
+        text[35][10] = 1;
+        text[36][10] = 1;
+        text[37][10] = 1;
+        text[38][10] = 1;
+        text[43][10] = 1;
+        text[45][10] = 1;
+        text[46][10] = 1;
+        text[52][10] = 1;
+        text[10][11] = 1;
+        text[13][11] = 1;
+        text[19][11] = 1;
+        text[20][11] = 1;
+        text[22][11] = 1;
+        text[26][11] = 1;
+        text[27][11] = 1;
+        text[38][11] = 1;
+        text[39][11] = 1;
+        text[43][11] = 1;
+        text[46][11] = 1;
+        text[47][11] = 1;
+        text[52][11] = 1;
+        text[10][12] = 1;
+        text[13][12] = 1;
+        text[20][12] = 1;
+        text[21][12] = 1;
+        text[22][12] = 1;
+        text[25][12] = 1;
+        text[26][12] = 1;
+        text[39][12] = 1;
+        text[40][12] = 1;
+        text[43][12] = 1;
+        text[47][12] = 1;
+        text[48][12] = 1;
+        text[52][12] = 1;
+        text[3][13] = 1;
+        text[4][13] = 1;
+        text[5][13] = 1;
+        text[6][13] = 1;
+        text[7][13] = 1;
+        text[8][13] = 1;
+        text[9][13] = 1;
+        text[10][13] = 1;
+        text[13][13] = 1;
+        text[21][13] = 1;
+        text[22][13] = 1;
+        text[25][13] = 1;
+        text[40][13] = 1;
+        text[43][13] = 1;
+        text[48][13] = 1;
+        text[49][13] = 1;
+        text[52][13] = 1;
+        text[53][13] = 1;
+        text[54][13] = 1;
+        text[55][13] = 1;
+        text[56][13] = 1;
+        text[57][13] = 1;
+        text[58][13] = 1;
+    end
+    
     wire clk25;
 
     reg died; // 1 if the snake just died
@@ -44,7 +213,7 @@ module snake_top
                  .last_pressed(key_code));
     
     //FSM that determines if anything is ouput on screen
-    game_state gs(clk, died, key_code, init_snake, screen_black, screen_pause);
+    game_state gs(PS2Clk, died, key_code, init_snake, screen_black, screen_pause);
 
     reg [11:0] x = 0, y = 0;
     
@@ -75,7 +244,7 @@ module snake_top
     
     always @(*) begin
         died = 0;
-        for (seg = 1; seg < 20; seg = seg + 1) begin
+        for (seg = 1; seg < `SNAKE_MAX; seg = seg + 1) begin
             if (positions[0] == positions[seg])
                 died = 1;
         end
@@ -103,7 +272,14 @@ module snake_top
         y <= (x == 799) ? ((y == 524) ? 0 : y + 1) : y;
         
         if (screen_black == 1) begin
-            rgb <= 12'h0F0;
+            rgb <= 12'h000;
+            for (tx = 0; tx < 64; tx = tx + 1) begin
+                for (ty = 0; ty < 48; ty = ty + 1) begin
+                    if ((x >= 10*tx) && (x < 10*tx + 10) && (y >= 10*ty) && (y < 10*ty + 10))
+                        if (text[tx][ty] == 1)
+                            rgb <= 12'h00F; 
+                end
+            end
         end
         else begin
             rgb <= rgb_next;
@@ -114,7 +290,7 @@ module snake_top
     reg [5:0] slow_vsync_count = 0;
     reg slow_vsync = 1;
     always @(negedge Vsync) begin
-        if (slow_vsync_count == 10) begin
+        if (slow_vsync_count == 5) begin
             slow_vsync <= 1;
             slow_vsync_count <= 1;
         end
@@ -151,7 +327,7 @@ module snake_top
                     positions[size] <= positions[size-1];
                 end
                 
-                for(seg = `SNAKE_MAX; seg > 0; seg = seg - 1) begin
+                for(seg = `SNAKE_MAX - 1; seg > 0; seg = seg - 1) begin
                     if (seg < size)
                         positions[seg] <= positions[seg - 1];
                 end
