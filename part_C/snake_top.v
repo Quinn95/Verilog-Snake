@@ -1,6 +1,5 @@
 `define SNAKE_MAX 100
 
-
 module snake_top
     ( input clk
     , input PS2Clk
