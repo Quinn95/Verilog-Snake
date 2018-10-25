@@ -605,7 +605,7 @@ text[3][5] = 1;
             //update direction based on keypress
             //up
              if (key_code == 8'h75) begin
-                if ((direction == 2) || (direction == 3))
+                if ((direction_last == 2) || (direction_last == 3))
                     direction <= 0;
             end
             //right
