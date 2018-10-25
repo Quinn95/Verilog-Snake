@@ -583,7 +583,10 @@ text[3][5] = 1;
             if (slow_vsync) begin
                 direction_last <= direction;
                 
-                if (positions[0] == apple) begin
+                if ((positions[0][`posX] > 10*apple[6:0]) &&
+                    (positions[0][`posX] < 10*apple[6:0] + 10) &&
+                    (positions[0][`posY] > 10*apple[12:7]) &&
+                    (positions[0][`posY] < 10*apple[12:7] + 10)) begin
                     apple <= apple_next;
                     size <= size + 1;
                     positions[size] <= positions[size-1];
