@@ -508,7 +508,7 @@ text[3][5] = 1;
                 (positions[0][`posY] < positions[seg][`posY] + 10))
                 died = 1;
         end
-        died = died || (positions[0][`posX] >= 640) || (positions[0][`posY] >= 480);
+        died = died || (positions[0][`posX] >= 630) || (positions[0][`posY] >= 470);
     end
     
     
@@ -560,7 +560,7 @@ text[3][5] = 1;
         end
     end
     
-    reg [2:0] delta = 1;
+    reg [10:0] delta = 1;
     
     always @(negedge Vsync) begin
         frame_count <= frame_count + 1;
@@ -591,12 +591,15 @@ text[3][5] = 1;
                 
                 for(seg = `SNAKE_MAX - 1; seg > 0; seg = seg - 1) begin
                     if (seg < size) begin
-                        positions[seg][`posY] <= positions[seg][`posY] +
-                            (positions[seg][`posY] < positions[seg - 1][`posY]) ? delta
-                            : -delta;
-                        positions[seg][`posX] <= positions[seg][`posX] + delta *
-                            (positions[seg][`posX] < positions[seg - 1][`posX]) ? delta
-                            : -delta;
+                        if (positions[seg][`posY] < positions[seg - 1][`posY])
+                            positions[seg][`posY] <= positions[seg][`posY] + delta;
+                        else
+                            positions[seg][`posY] <= positions[seg][`posY] - delta;
+                            
+                        if (positions[seg][`posX] < positions[seg - 1][`posX])
+                            positions[seg][`posX] <= positions[seg][`posX] + delta;
+                        else
+                            positions[seg][`posX] <= positions[seg][`posX] - delta;
                     end
                 end
             
@@ -614,7 +617,7 @@ text[3][5] = 1;
             //update direction based on keypress
             //up
              if (key_code == 8'h75) begin
-                if ((direction == 2) || (direction == 3))
+                if ((direction_last == 2) || (direction_last == 3))
                     direction <= 0;
             end
             //right
