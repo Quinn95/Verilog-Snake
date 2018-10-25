@@ -1,4 +1,4 @@
-`define SNAKE_MAX 100
+`define SNAKE_MAX 5
 
 
 module snake_top
@@ -14,6 +14,8 @@ module snake_top
     
     reg [10:0] tx, ty;
     reg text[63:0][47:0];
+    
+    reg [10:0] movement;
     
     initial begin
         for (tx = 0; tx < 64; tx = tx + 1) begin
@@ -454,12 +456,12 @@ text[3][5] = 1;
     reg [1:0] direction = 3;
     reg [1:0] direction_last = 3;
     
-    // 66 possible x values (0, 63) for visible, 64 for OOB right, 127 for OOB left
-    `define posX 6:0
-    // 50 possible y values (0, 47) for visible, 48 for OOB right,  63 for OOB left
-    `define posY 12:7
+    // 66 possible x values (0, 640)
+    `define posX 9:0
+    // 50 possible y values (0, 480)
+    `define posY 19:10
     // combine x and y positions into one vector, store in array for each of four snake segments
-    reg [12:0] positions[`SNAKE_MAX-1:0];
+    reg [19:0] positions[`SNAKE_MAX-1:0];
     
     clkdiv25 cd25 (clk, clk25);
 
@@ -483,18 +485,18 @@ text[3][5] = 1;
     reg grow;
     
     always@(*) begin
-        apple_next[`posX] = (frame_count % 63);
-        apple_next[`posY] = (frame_count % 47);
+        apple_next[6:0] = (frame_count % 63);
+        apple_next[12:7] = (frame_count % 47);
     end
     
     initial begin
-        positions[0] = 3;
-        positions[1] = 2;
-        positions[2] = 1;
+        positions[0] = 30;
+        positions[1] = 20;
+        positions[2] = 10;
         positions[3] = 0;
         for (seg = 4; seg < `SNAKE_MAX; seg = seg + 1) begin
-            positions[seg][`posX] = 64;
-            positions[seg][`posY] = 50;
+            positions[seg][`posX] = 641;
+            positions[seg][`posY] = 0;
         end
     end
     
@@ -503,17 +505,20 @@ text[3][5] = 1;
     always @(*) begin
         died = 0;
         for (seg = 1; seg < `SNAKE_MAX; seg = seg + 1) begin
-            if (positions[0] == positions[seg])
+            if ((positions[0][`posX] >=  positions[seg][`posX]) &&
+                (positions[0][`posX] < positions[seg][`posX] + 10) &&
+                (positions[0][`posY] >=  positions[seg][`posY]) &&
+                (positions[0][`posY] < positions[seg][`posY] + 10))
                 died = 1;
         end
-        died = died || (positions[0][`posX] > 63) || (positions[0][`posY] > 47);
+        died = died || (positions[0][`posX] >= 630) || (positions[0][`posY] >= 470);
     end
     
     
     always @(*) begin
         rgb_next = 12'hFFF;
-        if (((x >= 10*apple[`posX]) && (x < 10*apple[`posX] + 10))
-            && ((y >= 10*apple[`posY]) && (y < 10*apple[`posY] + 10)))
+        if (((x >= 10*apple[6:0]) && (x < 10*apple[6:0] + 10))
+            && ((y >= 10*apple[12:7]) && (y < 10*apple[12:7] + 10)))
                 rgb_next = 12'h0F0;
                 
         for (seg = 0; seg < `SNAKE_MAX; seg = seg + 1) begin
@@ -558,19 +563,21 @@ text[3][5] = 1;
         end
     end
     
+    reg [10:0] delta = 1;
+    
     always @(negedge Vsync) begin
         frame_count <= frame_count + 1;
  
         if (init_snake == 1) begin
             direction <= 3;
             size <= 4;
-            positions[0] <= 3;
-            positions[1] <= 2;
-            positions[2] <= 1;
+            positions[0] <= 30;
+            positions[1] <= 20;
+            positions[2] <= 10;
             positions[3] <= 0;
             for (seg = 4; seg < `SNAKE_MAX; seg = seg + 1) begin
-                positions[seg][`posX] <= 64;
-                positions[seg][`posY] <= 50;
+                positions[seg][`posX] <= 640;
+                positions[seg][`posY] <= 480;
             end
         end
   
@@ -579,25 +586,41 @@ text[3][5] = 1;
             if (slow_vsync) begin
                 direction_last <= direction;
                 
-                if (positions[0] == apple) begin
+                if ((positions[0][`posX] >= 10*apple[6:0]) &&
+                    (positions[0][`posX] < 10*apple[6:0] + 10) &&
+                    (positions[0][`posY] >= 10*apple[12:7]) &&
+                    (positions[0][`posY] < 10*apple[12:7] + 10)) begin
                     apple <= apple_next;
                     size <= size + 1;
                     positions[size] <= positions[size-1];
                 end
                 
+                if (direction == direction_last)
+                   movement <= delta;
+                else movement <= 10;
+                
                 for(seg = `SNAKE_MAX - 1; seg > 0; seg = seg - 1) begin
-                    if (seg < size)
-                        positions[seg] <= positions[seg - 1];
+                    if (seg < size) begin
+                            if (positions[seg][`posY] < positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] + movement;
+                            else if (positions[seg][`posY] > positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] - movement;
+                        
+                            if (positions[seg][`posX] < positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] + movement;
+                            else if (positions[seg][`posX] > positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] - movement;
+                    end
                 end
             
                 if (direction == 0) // up
-                    positions[0][`posY] <= positions[0][`posY] - 1; 
+                    positions[0][`posY] <= positions[0][`posY] - movement; 
                 else if (direction == 1) // down
-                    positions[0][`posY] <= positions[0][`posY] + 1; 
+                    positions[0][`posY] <= positions[0][`posY] + movement; 
                 else if (direction == 2) // left
-                    positions[0][`posX] <= positions[0][`posX] - 1; 
+                    positions[0][`posX] <= positions[0][`posX] - movement; 
                 else // direction == 3 right
-                    positions[0][`posX] <= positions[0][`posX] + 1; 
+                    positions[0][`posX] <= positions[0][`posX] + movement; 
                 
             end // if (slow_vsync)
             
