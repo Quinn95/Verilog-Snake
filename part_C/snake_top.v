@@ -9,6 +9,8 @@ module snake_top
     , output [3:0] vgaGreen
     , output Hsync
     , output Vsync
+    , output [3:0] an
+    , output [6:0] segH
     );
     
     reg [10:0] tx, ty;
@@ -497,7 +499,7 @@ text[3][5] = 1;
         end
     end
     
-        
+    segdisplay_driver score(clk, size-4, 1, an, segH);    
     
     always @(*) begin
         died = 0;
