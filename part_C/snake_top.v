@@ -1,4 +1,4 @@
-`define SNAKE_MAX 100
+`define SNAKE_MAX 5
 
 module snake_top
     ( input clk
@@ -593,12 +593,12 @@ text[3][5] = 1;
                     if (seg < size) begin
                         if (positions[seg][`posY] < positions[seg - 1][`posY])
                             positions[seg][`posY] <= positions[seg][`posY] + delta;
-                        else
+                        else if (positions[seg][`posY] > positions[seg - 1][`posY])
                             positions[seg][`posY] <= positions[seg][`posY] - delta;
-                            
+                    
                         if (positions[seg][`posX] < positions[seg - 1][`posX])
                             positions[seg][`posX] <= positions[seg][`posX] + delta;
-                        else
+                        else if (positions[seg][`posX] > positions[seg - 1][`posX])
                             positions[seg][`posX] <= positions[seg][`posX] - delta;
                     end
                 end
