@@ -591,15 +591,28 @@ text[3][5] = 1;
                 
                 for(seg = `SNAKE_MAX - 1; seg > 0; seg = seg - 1) begin
                     if (seg < size) begin
-                        if (positions[seg][`posY] < positions[seg - 1][`posY])
-                            positions[seg][`posY] <= positions[seg][`posY] + delta;
-                        else if (positions[seg][`posY] > positions[seg - 1][`posY])
-                            positions[seg][`posY] <= positions[seg][`posY] - delta;
-                    
-                        if (positions[seg][`posX] < positions[seg - 1][`posX])
-                            positions[seg][`posX] <= positions[seg][`posX] + delta;
-                        else if (positions[seg][`posX] > positions[seg - 1][`posX])
-                            positions[seg][`posX] <= positions[seg][`posX] - delta;
+                        if (direction == direction_last) begin
+                            if (positions[seg][`posY] < positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] + delta;
+                            else if (positions[seg][`posY] > positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] - delta;
+                        
+                            if (positions[seg][`posX] < positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] + delta;
+                            else if (positions[seg][`posX] > positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] - delta;
+                        end
+                        else begin
+                            if (positions[seg][`posY] < positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] + (10*delta);
+                            else if (positions[seg][`posY] > positions[seg - 1][`posY])
+                                positions[seg][`posY] <= positions[seg][`posY] - (10*delta);
+                        
+                            if (positions[seg][`posX] < positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] + (10*delta);
+                            else if (positions[seg][`posX] > positions[seg - 1][`posX])
+                                positions[seg][`posX] <= positions[seg][`posX] - (10*delta);
+                        end
                     end
                 end
             
