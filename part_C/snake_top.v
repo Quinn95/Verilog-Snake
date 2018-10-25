@@ -518,7 +518,7 @@ text[3][5] = 1;
         for (seg = 0; seg < `SNAKE_MAX; seg = seg + 1) begin
             if (((x >= 10*positions[seg][`posX]) && (x < 10*positions[seg][`posX] + 10))
                 && ((y >= 10*positions[seg][`posY]) && (y < 10*positions[seg][`posY] + 10))) begin
-                    rgb_next = 12'h000;
+                    rgb_next = 12'h00F;
             end
         end
     end
@@ -547,7 +547,7 @@ text[3][5] = 1;
     reg [5:0] slow_vsync_count = 0;
     reg slow_vsync = 1;
     always @(negedge Vsync) begin
-        if (slow_vsync_count == 5) begin
+        if (slow_vsync_count == 6) begin
             slow_vsync <= 1;
             slow_vsync_count <= 1;
         end
