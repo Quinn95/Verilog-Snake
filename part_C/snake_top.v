@@ -14,6 +14,8 @@ module snake_top
     reg [10:0] tx, ty;
     reg text[63:0][47:0];
     
+    reg [10:0] movement;
+    
     initial begin
         for (tx = 0; tx < 64; tx = tx + 1) begin
             for (ty = 0; ty < 48; ty = ty + 1) begin
@@ -592,41 +594,32 @@ text[3][5] = 1;
                     positions[size] <= positions[size-1];
                 end
                 
+                if (direction == direction_last)
+                   movement <= delta;
+                else movement <= 10;
+                
                 for(seg = `SNAKE_MAX - 1; seg > 0; seg = seg - 1) begin
                     if (seg < size) begin
-                        if (direction == direction_last) begin
                             if (positions[seg][`posY] < positions[seg - 1][`posY])
-                                positions[seg][`posY] <= positions[seg][`posY] + delta;
+                                positions[seg][`posY] <= positions[seg][`posY] + movement;
                             else if (positions[seg][`posY] > positions[seg - 1][`posY])
-                                positions[seg][`posY] <= positions[seg][`posY] - delta;
+                                positions[seg][`posY] <= positions[seg][`posY] - movement;
                         
                             if (positions[seg][`posX] < positions[seg - 1][`posX])
-                                positions[seg][`posX] <= positions[seg][`posX] + delta;
+                                positions[seg][`posX] <= positions[seg][`posX] + movement;
                             else if (positions[seg][`posX] > positions[seg - 1][`posX])
-                                positions[seg][`posX] <= positions[seg][`posX] - delta;
-                        end
-                        else begin
-                            if (positions[seg][`posY] < positions[seg - 1][`posY])
-                                positions[seg][`posY] <= positions[seg][`posY] + (10*delta);
-                            else if (positions[seg][`posY] > positions[seg - 1][`posY])
-                                positions[seg][`posY] <= positions[seg][`posY] - (10*delta);
-                        
-                            if (positions[seg][`posX] < positions[seg - 1][`posX])
-                                positions[seg][`posX] <= positions[seg][`posX] + (10*delta);
-                            else if (positions[seg][`posX] > positions[seg - 1][`posX])
-                                positions[seg][`posX] <= positions[seg][`posX] - (10*delta);
-                        end
+                                positions[seg][`posX] <= positions[seg][`posX] - movement;
                     end
                 end
             
                 if (direction == 0) // up
-                    positions[0][`posY] <= positions[0][`posY] - delta; 
+                    positions[0][`posY] <= positions[0][`posY] - movement; 
                 else if (direction == 1) // down
-                    positions[0][`posY] <= positions[0][`posY] + delta; 
+                    positions[0][`posY] <= positions[0][`posY] + movement; 
                 else if (direction == 2) // left
-                    positions[0][`posX] <= positions[0][`posX] - delta; 
+                    positions[0][`posX] <= positions[0][`posX] - movement; 
                 else // direction == 3 right
-                    positions[0][`posX] <= positions[0][`posX] + delta; 
+                    positions[0][`posX] <= positions[0][`posX] + movement; 
                 
             end // if (slow_vsync)
             
